@@ -12,19 +12,11 @@ cleaned as (
         incident_zip,
         city,
         status,
-        INITCAP(LOWER(borough))   as borough,
-        CAST(latitude AS NUMERIC) as latitude,
-        CAST(longitude AS NUMERIC) as longitude,
-        CASE 
-            WHEN created_date = 'NaN' OR created_date IS NULL 
-            THEN NULL
-            ELSE created_date::timestamp
-        END as created_at,
-        CASE 
-            WHEN closed_date = 'NaN' OR closed_date IS NULL 
-            THEN NULL
-            ELSE closed_date::timestamp
-        END as closed_at
+        initcap(lower(borough)) as borough,
+        latitude::numeric as latitude,
+        longitude::numeric as longitude,
+        nullif(created_date, 'NaN')::timestamp as created_at,
+        nullif(closed_date, 'NaN')::timestamp as closed_at
     from source
     where unique_key is not null
 )
